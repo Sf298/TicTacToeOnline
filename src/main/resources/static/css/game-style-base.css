@@ -1,0 +1,49 @@
+* {
+    background-color: #2B2B2B;
+}
+.cross {
+    color: #DD1111;
+    padding-bottom: 10px;
+}
+.circle {
+    color: #00BBFF;
+}
+
+.my-cell {
+    font-family: "Courier New";
+    font-size: 40px;
+    text-align: center;
+    overflow: hidden;
+}
+
+table {
+    border-collapse: collapse;
+    border: none;
+
+    width: min(80vw, 80vh);
+    height: min(80vw, 80vh);
+    margin: auto;
+    table-layout: fixed;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+td {
+    border: 5px solid white;
+}
+tr {
+    height: 30%;
+}
+td:first-child {
+    border-left: none;
+}
+td:last-child {
+    border-right: none;
+}
+tr:first-child td {
+    border-top: none;
+}
+tr:last-child td {
+    border-bottom: none;
+}
