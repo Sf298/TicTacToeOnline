@@ -24,7 +24,6 @@ public class Game {
     };
 
 
-    public int id;
     public long lastMove;
 
     public int player1Id;
@@ -32,12 +31,12 @@ public class Game {
     public Integer turn;
     public Integer[] board;
 
-    public Game(int id, int player1Id, int player2Id) {
-        this.id = id;
+    public Game(int player1Id, int player2Id) {
         this.lastMove = System.currentTimeMillis();
 
         this.player1Id = player1Id;
         this.player2Id = player2Id;
+        this.turn = player1Id;
         this.board = new Integer[9];
     }
 
@@ -50,6 +49,8 @@ public class Game {
         }
 
         board[position] = userId;
+
+        turn = turn==player1Id ? player2Id : player1Id;
 
         this.lastMove = System.currentTimeMillis();
     }
@@ -76,9 +77,9 @@ public class Game {
     }
 
     public Player byUserId(int userId) {
-        if (id == player1Id) {
+        if (userId == player1Id) {
             return Player.PLAYER_1;
-        } else if (id == player2Id) {
+        } else if (userId == player2Id) {
             return Player.PLAYER_2;
         } else {
             throw new IllegalArgumentException("Player not found in this game");
@@ -89,13 +90,17 @@ public class Game {
         if (isNull(userId)) {
             return null;
         }
-        if (id == player1Id) {
+        if (userId == player1Id) {
             return Player.PLAYER_1;
-        } else if (id == player2Id) {
+        } else if (userId == player2Id) {
             return Player.PLAYER_2;
         } else {
             return null;
         }
+    }
+
+    public boolean hasExactPlayers(int playerAId, int playerBId) {
+        return (playerAId == player1Id && playerBId == player2Id) || (playerAId == player2Id && playerBId == player1Id);
     }
 
 }

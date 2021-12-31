@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.Objects.isNull;
 
@@ -18,8 +17,7 @@ public class GameManagerServiceImpl implements GameManagerService {
 
     private final UserManagerService userManager;
 
-    private Set<Game> games;
-    private Map<Integer, Game> gamesByUserId = new HashMap<>();
+    private final Map<Integer, Game> gamesByUserId = new HashMap<>();
 
     @Autowired
     public GameManagerServiceImpl(UserManagerService userManager) {
@@ -27,8 +25,23 @@ public class GameManagerServiceImpl implements GameManagerService {
     }
 
     @Override
+    public Game createGame(int userId, int friendId) {
+        Game newGame = new Game(userId, friendId);
+
+        gamesByUserId.put(userId, newGame);
+        gamesByUserId.put(friendId, newGame);
+
+        return newGame;
+    }
+
+    @Override
     public Game findByUserId(int userId) {
         return gamesByUserId.get(userId);
+    }
+
+    @Override
+    public void endForUser(int userId) {
+        gamesByUserId.remove(userId);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import static java.util.Objects.isNull;
@@ -35,6 +36,24 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.ok(name);
+    }
+
+    @GetMapping(path = "/add-friend/{friendId}")
+    public String addFriend(@CookieValue(value = "userId", required=false) Integer userId, @PathVariable int friendId) {
+        if (!userManager.exists(userId)) {
+            return "redirect:/";
+        }
+        userManager.addFriend(userId, friendId);
+        return "redirect:/menu/create";
+    }
+
+    @GetMapping(path = "/remove-friend/{friendId}")
+    public String removeFriend(@CookieValue(value = "userId", required=false) Integer userId, @PathVariable int friendId) {
+        if (!userManager.exists(userId)) {
+            return "redirect:/";
+        }
+        userManager.removeFriend(userId, friendId);
+        return "redirect:/menu/create";
     }
 
 }

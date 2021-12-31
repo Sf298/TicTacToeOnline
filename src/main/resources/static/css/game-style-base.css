@@ -1,17 +1,16 @@
-* {
-    background-color: #2B2B2B;
-}
+
 .cross {
     color: #DD1111;
-    padding-bottom: 10px;
+    padding-bottom: 7px;
+    font-size: 15vh;
 }
 .circle {
     color: #00BBFF;
+    font-size: 12vh;
 }
 
 .my-cell {
     font-family: "Courier New";
-    font-size: 40px;
     text-align: center;
     overflow: hidden;
 }
@@ -20,8 +19,8 @@ table {
     border-collapse: collapse;
     border: none;
 
-    width: min(80vw, 80vh);
-    height: min(80vw, 80vh);
+    width: min(75vw, 75vh);
+    height: min(75vw, 75vh);
     margin: auto;
     table-layout: fixed;
 
@@ -46,4 +45,8 @@ tr:first-child td {
 }
 tr:last-child td {
     border-bottom: none;
+}
+
+.underline {
+    text-decoration: underline;
 }
