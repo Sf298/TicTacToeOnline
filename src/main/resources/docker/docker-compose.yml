@@ -1,0 +1,17 @@
+version: '3'
+volumes:
+  tictactoe_mysql:
+    driver: local
+services:
+  tictactoe_mysql:
+    image: mysql:8
+    container_name: tictactoe_db
+    volumes:
+      - tictactoe_mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 7ZHyShD
+      MYSQL_DATABASE: tictactoe
+      MYSQL_USER: tictactoe
+      MYSQL_PASSWORD: SVQjGyk
+    ports:
+      - 14589:3306

@@ -1,0 +1,7 @@
+spring:
+    datasource:
+        url: "jdbc:mysql://localhost:14589/url?autoreconnect=true"
+        password: "SVQjGyk"
+flyway:
+    url: "jdbc:mysql://localhost:14589/"
+    password: "SVQjGyk"
