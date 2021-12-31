@@ -9,7 +9,7 @@
 <body>
 
 <div style="text-align:center; font-size:20px; font-family:'Courier New'; color:white">
-    <span id="player1Name" style="color:#DD1111">${game.player1Name}</span> vs <span id="player2Name" style="color:#00BBFF">${game.player2Name}</span>
+    <span id="player1Name" style="color:#DD1111">${game.player1Name!''}</span> vs <span id="player2Name" style="color:#00BBFF">${game.player2Name!''}</span>
 </div>
 <br/>
 

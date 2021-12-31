@@ -1,12 +1,12 @@
 
 .cross {
     color: #DD1111;
-    padding-bottom: 7px;
-    font-size: 15vh;
+    font-size: min(15vw, 15vh);
 }
 .circle {
     color: #00BBFF;
-    font-size: 12vh;
+    padding-top: min(2vw, 2vh);
+    font-size: min(12vw, 12vh);
 }
 
 .my-cell {

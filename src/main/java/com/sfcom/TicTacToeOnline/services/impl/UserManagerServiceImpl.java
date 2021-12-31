@@ -106,6 +106,13 @@ public class UserManagerServiceImpl implements UserManagerService {
         return Collections.unmodifiableList(usersByIp.getOrDefault(ip, Collections.emptyList()));
     }
 
+    @Override
+    public List<Integer> findAll() {
+        return usersByIp.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
 
     private List<String> resourceToList(String classpath) throws IOException {
         List<String> list = new ArrayList<>();

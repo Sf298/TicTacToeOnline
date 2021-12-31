@@ -54,7 +54,9 @@ public class MenuController {
     }
 
     @GetMapping(value = "/menu/create")
-    public String createGameMenu(@CookieValue(value = "userId", required=false) Integer userId, HttpServletRequest request, Model model) {
+    public String createGameMenu(@CookieValue(value = "userId", required=false) Integer userId,
+                                 HttpServletRequest request,
+                                 Model model) {
         if (!userManager.exists(userId)) {
             return "redirect:/";
         }
@@ -64,12 +66,16 @@ public class MenuController {
         Map<String, String> friends = userManager.getNames(friendIds).entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue));
 
+        // TODO Grey out unjoinable players
+
         String userIp = HeadersUtils.getClientIp(request);
-        List<Integer> nearbyIds = userManager.findNearby(userIp);
+        List<Integer> nearbyIds = userManager.findAll();
         Map<String, String> nearby = userManager.getNames(nearbyIds).entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue));
         friends.keySet().forEach(nearby::remove);
         nearby.remove(userId+"");
+
+        // TODO add new section for searching global players
 
         model.addAttribute("userName", userName);
         model.addAttribute("friends", friends);

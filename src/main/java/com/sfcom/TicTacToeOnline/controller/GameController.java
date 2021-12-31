@@ -52,17 +52,16 @@ public class GameController {
         }
 
         Game existingGame = gameManager.findByUserId(userId);
-        if (nonNull(existingGame)) {
-            if (existingGame.hasExactPlayers(userId, friendId)) {
+        if (nonNull(existingGame) && existingGame.hasExactPlayers(userId, friendId)) {
                 return "redirect:/game";
-            } else {
-                throw new IllegalStateException("Friend has a game already! id: " + friendId);
-            }
+        }
+
+        if (nonNull(gameManager.findByUserId(friendId))) {
+            throw new IllegalStateException("Friend has a game already! id: " + friendId);
         }
 
         gameManager.createGame(userId, friendId);
 
-        // if already has game with clicked friend, redirect to it
         return "redirect:/game";
     }
 
@@ -108,18 +107,23 @@ public class GameController {
             return "redirect:/menu/create";
         }
 
+        // TODO I think that the reason this gets called is a race condition between when a player makes a move and the
+        //  other player's client calls a refresh.
         if (!game.isComplete()) {
             return "redirect:/game";
         }
 
         String state;
         if (isNull(game.winner())) {
-            state = "It's a draw!";
+            if (game.forceQuit) {
+                state = "Opponent quit!";
+            } else {
+                state = "It's a draw!";
+            }
         } else if (Objects.equals(game.winner(), userId)) {
             state = "You win!";
         } else {
             state = "You lose :(";
-
         }
 
         gameManager.endForUser(userId);
@@ -128,9 +132,10 @@ public class GameController {
         return "end-page";
     }
 
-    @DeleteMapping(path = "/end-saved")
+    @GetMapping(path = "/end-saved")
     public String endSavedGame(@CookieValue(value = "userId", required=false) Integer userId) {
         if (userManager.exists(userId)) {
+            gameManager.findByUserId(userId).forceExit();
             gameManager.endForUser(userId);
         }
 

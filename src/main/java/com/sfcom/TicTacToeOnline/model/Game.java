@@ -25,6 +25,7 @@ public class Game {
 
 
     public long lastMove;
+    public boolean forceQuit = false;
 
     public int player1Id;
     public int player2Id;
@@ -56,7 +57,11 @@ public class Game {
     }
 
     public boolean isComplete() {
-        return Arrays.stream(board).allMatch(Objects::nonNull) || nonNull(winner());
+        return forceQuit || Arrays.stream(board).allMatch(Objects::nonNull) || nonNull(winner());
+    }
+
+    public void forceExit() {
+        forceQuit = true;
     }
 
     public Integer winner() {

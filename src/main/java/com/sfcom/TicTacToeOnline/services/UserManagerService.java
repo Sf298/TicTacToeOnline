@@ -25,4 +25,6 @@ public interface UserManagerService {
     void updateIp(Integer userId, String ip);
 
     List<Integer> findNearby(String ip);
+
+    List<Integer> findAll();
 }
