@@ -1,14 +1,15 @@
 package com.sfcom.TicTacToeOnline.controller;
 
-import com.sfcom.TicTacToeOnline.model.Game;
+import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.GameManagerService;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -16,10 +17,12 @@ import static java.util.Objects.isNull;
 @RequestMapping("/user")
 public class UserController {
 
+    private final GameManagerService gameManager;
     private final UserManagerService userManager;
 
     @Autowired
-    public UserController(UserManagerService userManager) {
+    public UserController(GameManagerService gameManager, UserManagerService userManager) {
+        this.gameManager = gameManager;
         this.userManager = userManager;
     }
 
@@ -36,6 +39,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.ok(name);
+    }
+
+    @GetMapping(path = "/search/{userId}")
+    public ResponseEntity<List<PlayerListing>> search(@PathVariable int userId,
+                                                      @RequestParam String searchString) {
+        List<PlayerListing> listings = userManager.searchListings(searchString, userId);
+        listings.removeIf(l -> l.id == userId);
+        gameManager.populateAvailability(listings, userId);
+
+        return ResponseEntity.ok(listings);
     }
 
     @GetMapping(path = "/add-friend/{friendId}")

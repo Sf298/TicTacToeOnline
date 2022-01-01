@@ -1,8 +1,9 @@
 package com.sfcom.TicTacToeOnline.services;
 
+import com.sfcom.TicTacToeOnline.model.PlayerListing;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 public interface UserManagerService {
 
@@ -10,7 +11,9 @@ public interface UserManagerService {
 
     String getName(int id);
 
-    Map<Integer, String> getNames(List<Integer> ids);
+    List<PlayerListing> getListings(List<Integer> ids, Integer requesterId);
+
+    List<PlayerListing> searchListings(String searchString, Integer requesterId);
 
     boolean exists(Integer userId);
 

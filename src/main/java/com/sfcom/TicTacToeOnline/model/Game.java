@@ -104,6 +104,10 @@ public class Game {
         }
     }
 
+    public boolean hasPlayer(int playerId) {
+        return playerId == player1Id || playerId == player2Id;
+    }
+
     public boolean hasExactPlayers(int playerAId, int playerBId) {
         return (playerAId == player1Id && playerBId == player2Id) || (playerAId == player2Id && playerBId == player1Id);
     }

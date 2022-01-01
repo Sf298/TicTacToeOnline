@@ -1,5 +1,6 @@
 package com.sfcom.TicTacToeOnline.controller;
 
+import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.GameManagerService;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import com.sfcom.TicTacToeOnline.utils.HeadersUtils;
@@ -14,8 +15,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -63,19 +65,21 @@ public class MenuController {
 
         String userName = userManager.getName(userId);
         List<Integer> friendIds = userManager.getFriends(userId);
-        Map<String, String> friends = userManager.getNames(friendIds).entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue));
+        List<PlayerListing> friends = userManager.getListings(friendIds, userId);
+        gameManager.populateAvailability(friends, userId);
 
-        // TODO Grey out unjoinable players
+        // TODO slight gap missing between search results name and friend buttons
+        // TODO add IP address expiry
+
+        Set<Integer> idsToExclude = new HashSet<>(friendIds);
+        idsToExclude.add(userId);
 
         String userIp = HeadersUtils.getClientIp(request);
-        List<Integer> nearbyIds = userManager.findAll();
-        Map<String, String> nearby = userManager.getNames(nearbyIds).entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue));
-        friends.keySet().forEach(nearby::remove);
-        nearby.remove(userId+"");
-
-        // TODO add new section for searching global players
+        List<Integer> nearbyIds = userManager.findNearby(userIp);
+        List<PlayerListing> nearby = userManager.getListings(nearbyIds, userId).stream()
+                .filter(l -> !idsToExclude.contains(l.id))
+                .collect(Collectors.toList());
+        gameManager.populateAvailability(nearby, userId);
 
         model.addAttribute("userName", userName);
         model.addAttribute("friends", friends);

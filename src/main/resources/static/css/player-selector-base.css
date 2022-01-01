@@ -1,0 +1,9 @@
+
+.inlineBlk {
+    display: inline-block;
+}
+
+button.username.button {
+    width: 200px;
+    margin-bottom: 7px;
+}

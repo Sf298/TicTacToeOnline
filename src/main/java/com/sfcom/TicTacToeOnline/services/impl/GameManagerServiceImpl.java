@@ -2,15 +2,18 @@ package com.sfcom.TicTacToeOnline.services.impl;
 
 import com.sfcom.TicTacToeOnline.model.Game;
 import com.sfcom.TicTacToeOnline.model.GameDto;
+import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.GameManagerService;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 public class GameManagerServiceImpl implements GameManagerService {
@@ -49,6 +52,14 @@ public class GameManagerServiceImpl implements GameManagerService {
         if (isNull(game) || isNull(requester))
             return null;
         return new GameDto(requester, userManager.getName(game.player1Id), userManager.getName(game.player2Id), game);
+    }
+
+    @Override
+    public void populateAvailability(List<PlayerListing> listings, Integer requesterId) {
+        listings.forEach(l -> {
+            Game game = gamesByUserId.get(l.id);
+            l.available = isNull(game) || game.hasPlayer(requesterId);
+        });
     }
 
 }

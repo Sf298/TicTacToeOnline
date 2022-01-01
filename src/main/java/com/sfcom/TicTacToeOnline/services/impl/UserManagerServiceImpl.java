@@ -1,5 +1,6 @@
 package com.sfcom.TicTacToeOnline.services.impl;
 
+import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import com.sfcom.TicTacToeOnline.utils.HeadersUtils;
 import org.springframework.core.io.ClassPathResource;
@@ -49,11 +50,20 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
 
     @Override
-    public Map<Integer, String> getNames(List<Integer> ids) {
-        Set<Integer> idsSet = new HashSet<>(ids);
+    public List<PlayerListing> getListings(List<Integer> ids, Integer requesterId) {
+        return ids.stream()
+                .filter(idToName::containsKey)
+                .map(i -> new PlayerListing(i, idToName.get(i), getFriends(requesterId).contains(i)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PlayerListing> searchListings(String searchString, Integer requesterId) {
+        List<String> tokens = List.of(searchString.trim().toLowerCase().split("[ ]+"));
         return idToName.entrySet().stream()
-                .filter(e -> idsSet.contains(e.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .filter(e -> tokens.stream().anyMatch(t -> e.getValue().toLowerCase().contains(t)))
+                .map(e -> new PlayerListing(e.getKey(), e.getValue(), getFriends(requesterId).contains(e.getKey())))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -92,7 +102,14 @@ public class UserManagerServiceImpl implements UserManagerService {
 
     @Override
     public void updateIp(Integer userId, String ip) {
-        if (isNull(userId)) return;
+        if (isNull(userId)) {
+            return;
+        }
+
+        if (usersByIp.containsKey(ip) && usersByIp.get(ip).contains(userId)) {
+            return;
+        }
+        System.out.println("setting ip of '"+getName(userId)+" ("+userId+")' to "+ip);
 
         usersByIp.values().forEach(l -> l.remove(userId));
 
