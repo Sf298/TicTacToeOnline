@@ -3,6 +3,7 @@ This is a project to bring the hit childerens' game, tic tac toe, to the modern 
 
 
 # Features
+- Play from any device
 - Clean UI
 - No ads
 - Light weight
