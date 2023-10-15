@@ -4,11 +4,11 @@ import com.sfcom.TicTacToeOnline.model.PlayerIP;
 import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import com.sfcom.TicTacToeOnline.utils.HeadersUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.swing.Timer;
 import java.io.IOException;
 import java.util.*;

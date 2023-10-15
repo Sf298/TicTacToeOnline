@@ -1,8 +1,8 @@
 package com.sfcom.TicTacToeOnline.services;
 
 import com.sfcom.TicTacToeOnline.model.PlayerListing;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserManagerService {

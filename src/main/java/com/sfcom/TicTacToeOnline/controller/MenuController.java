@@ -4,16 +4,15 @@ import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.GameManagerService;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import com.sfcom.TicTacToeOnline.utils.HeadersUtils;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import java.util.HashSet;
 import java.util.List;
