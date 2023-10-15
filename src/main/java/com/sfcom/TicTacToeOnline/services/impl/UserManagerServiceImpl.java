@@ -1,5 +1,6 @@
 package com.sfcom.TicTacToeOnline.services.impl;
 
+import com.sfcom.TicTacToeOnline.model.PlayerIP;
 import com.sfcom.TicTacToeOnline.model.PlayerListing;
 import com.sfcom.TicTacToeOnline.services.UserManagerService;
 import com.sfcom.TicTacToeOnline.utils.HeadersUtils;
@@ -8,8 +9,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.Timer;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -24,11 +27,15 @@ public class UserManagerServiceImpl implements UserManagerService {
 
     private final Map<Integer, String> idToName = new HashMap<>();
     private final Map<Integer, List<Integer>> friends = new HashMap<>();
-    private final Map<String, List<Integer>> usersByIp = new HashMap<>();
+    private final Map<String, List<PlayerIP>> usersByIp = new HashMap<>();
 
     public UserManagerServiceImpl() throws IOException {
         colours = resourceToList("/lists/colours.txt");
         animals = resourceToList("/lists/animals.txt");
+
+        long maxAge = 1000L * 60 * 5;
+        Timer ipCleanerTimer = new Timer(60000, e -> removeIpsBy(pip -> pip.age() > maxAge));
+        ipCleanerTimer.start();
     }
 
 
@@ -102,31 +109,43 @@ public class UserManagerServiceImpl implements UserManagerService {
 
     @Override
     public void updateIp(Integer userId, String ip) {
-        if (isNull(userId)) {
+        if (isNull(userId) || isNull(ip)) {
             return;
         }
 
-        if (usersByIp.containsKey(ip) && usersByIp.get(ip).contains(userId)) {
-            return;
+        List<PlayerIP> list = usersByIp.getOrDefault(ip, new ArrayList<>());
+
+        PlayerIP existingIp = list.stream().filter(pip -> pip.getUserId()==userId).findFirst().orElse(null);
+        if (isNull(existingIp) || !existingIp.getIpAddress().equals(ip)) {
+            System.out.println("setting ip of '"+getName(userId)+" ("+userId+")' to "+ip);
+            if (isNull(existingIp)) {
+                existingIp = new PlayerIP(userId);
+                list.add(existingIp);
+            }
+            existingIp.setIpAddress(ip);
         }
-        System.out.println("setting ip of '"+getName(userId)+" ("+userId+")' to "+ip);
+        existingIp.setLastUpdated(System.currentTimeMillis());
 
-        usersByIp.values().forEach(l -> l.remove(userId));
+        removeIpsBy(pip -> pip.getUserId()==userId && !pip.getIpAddress().equals(ip));
 
-        List<Integer> list = usersByIp.getOrDefault(ip, new ArrayList<>());
-        list.add(userId);
         usersByIp.putIfAbsent(ip, list);
     }
 
     @Override
     public List<Integer> findNearby(String ip) {
-        return Collections.unmodifiableList(usersByIp.getOrDefault(ip, Collections.emptyList()));
+        List<PlayerIP> existing = usersByIp.get(ip);
+        if (isNull(existing) || existing.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return existing.stream().map(PlayerIP::getUserId).toList();
     }
 
     @Override
     public List<Integer> findAll() {
         return usersByIp.values().stream()
                 .flatMap(Collection::stream)
+                .map(PlayerIP::getUserId)
                 .collect(Collectors.toList());
     }
 
@@ -139,6 +158,16 @@ public class UserManagerServiceImpl implements UserManagerService {
             list.add(in.nextLine());
         }
         return list;
+    }
+
+    private void removeIpsBy(Predicate<PlayerIP> filter) {
+        usersByIp.values().forEach(l -> l.removeIf(filter));
+
+        List<String> toRemove = usersByIp.entrySet().stream()
+                .filter(e -> e.getValue().isEmpty())
+                .map(Map.Entry::getKey)
+                .toList();
+        toRemove.forEach(usersByIp::remove);
     }
 
 }
