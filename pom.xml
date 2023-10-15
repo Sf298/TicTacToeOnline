@@ -12,7 +12,7 @@
 
 	<groupId>com.sfcom</groupId>
 	<artifactId>TicTacToeOnline</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>TicTacToe Online</name>
 	<description>TicTacToe Website</description>
 
