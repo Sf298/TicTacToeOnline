@@ -18,7 +18,7 @@ public class IpUpdateInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
-                             Object handler) throws Exception {
+                             Object handler) {
         if(isNull(request.getCookies())) {
             return true;
         }
